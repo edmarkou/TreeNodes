@@ -62,13 +62,7 @@ export default class App extends Component {
     else {
       return (
         <View style={{paddingLeft: 5 * (depth + 1), marginBottom: 5}}>
-          <View style={styles.nameContainer}>
-            <Text>{object.name}</Text>
-            <TouchableOpacity style={styles.button} onPress={this.addNode.bind(this, depth, path)}>
-              <Text style={styles.buttonText}>Add node</Text>
-            </TouchableOpacity>
-          </View>
-          {object.children.map((child, index) => this.renderNode(child, depth + 1, path + `.children.${index}`))}
+          
         </View>
       )
     }
