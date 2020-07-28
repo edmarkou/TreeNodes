@@ -21,6 +21,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
+      mode: "iterative",
       tree: {
         name: 'Main node',
         children: [
@@ -46,24 +47,42 @@ export default class App extends Component {
   }
 
   renderNode = (object, depth, path) => {
-    return (
-      <View style={{paddingLeft: 5 * (depth + 1), marginBottom: 5}}>
-        <View style={styles.nameContainer}>
-          <Text>{object.name}</Text>
-          <TouchableOpacity style={styles.button} onPress={this.addNode.bind(this, depth, path)}>
-            <Text style={styles.buttonText}>Add node</Text>
-          </TouchableOpacity>
+    if (this.state.mode === 'iterative')
+      return (
+        <View style={{paddingLeft: 5 * (depth + 1), marginBottom: 5}}>
+          <View style={styles.nameContainer}>
+            <Text>{object.name}</Text>
+            <TouchableOpacity style={styles.button} onPress={this.addNode.bind(this, depth, path)}>
+              <Text style={styles.buttonText}>Add node</Text>
+            </TouchableOpacity>
+          </View>
+          {object.children.map((child, index) => this.renderNode(child, depth + 1, path + `.children.${index}`))}
         </View>
-        {object.children.map((child, index) => this.renderNode(child, depth + 1, path + `.children.${index}`))}
-      </View>
-    )
+      )
+    else {
+      return (
+        <View style={{paddingLeft: 5 * (depth + 1), marginBottom: 5}}>
+          <View style={styles.nameContainer}>
+            <Text>{object.name}</Text>
+            <TouchableOpacity style={styles.button} onPress={this.addNode.bind(this, depth, path)}>
+              <Text style={styles.buttonText}>Add node</Text>
+            </TouchableOpacity>
+          </View>
+          {object.children.map((child, index) => this.renderNode(child, depth + 1, path + `.children.${index}`))}
+        </View>
+      )
+    }
   }
 
   mapTree = () => <View>{this.renderNode(this.state.tree, 0, '')}</View>
+  switchMode = () => this.setState({mode: this.state.mode === 'iterative' ? 'recursive' : 'iterative'})
 
   render() {
     return (
       <View style={styles.container}>
+        <TouchableOpacity style={styles.modeButton} onPress={this.switchMode}>
+          <Text style={styles.buttonText}>Switch mode</Text>
+        </TouchableOpacity>
         <ScrollView>
           {this.mapTree()}
         </ScrollView>
@@ -75,7 +94,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({ 
   container: {
     flex: 1,
-    padding: 10
+    padding: 10,
   },
   nameContainer: {
     flexDirection: 'row',
@@ -90,5 +109,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff'
+  },
+  modeButton: {
+    backgroundColor: 'red',
+    margin: 20,
+    padding: 5,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
